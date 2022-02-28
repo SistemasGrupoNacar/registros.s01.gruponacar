@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
+}
+
+:root {
+  --color-primary: #114b5f;
+  --color-secondary: #000411;
+  --white: #fff;
+  --black: #000;
+  --dark-white: #fafafa;
+  --light-black: #333;
+  --gray: #909399;
+}
+
+._bold {
+  font-weight: bold;
+}
+[class*="_w-"] {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  ._w-70 {
+    width: 70% !important;
+  }
+  ._w-50{
+    width: 50% !important; 
+  }
+}
