@@ -15,7 +15,7 @@
           clearable
         />
         <el-input
-          v-model="credenciales.pin"
+          v-model="credenciales.password"
           class="_w-50 d-block mx-auto my-4"
           placeholder="Ingrese su pin"
           size="large"
@@ -29,7 +29,6 @@
           >Registrar acci&oacute;n</el-button
         >
       </el-main>
-      {{ credenciales }}
     </div>
   </div>
 </template>
@@ -46,7 +45,8 @@ export default {
       credenciales: {
         action: null,
         username: null,
-        pin: null,
+        password: null,
+        date: null
       },
     };
   },
@@ -61,26 +61,39 @@ export default {
         return;
       }
       try {
-      
-        await registrarAccionApi(datos);
+        datos.date = new Date();
+        const response = await registrarAccionApi(datos);
         switch (datos.action) {
           case "Entrada":
             ElMessage.success({
-              message: "Entrada registrada correctamente",
+              message:
+                "Entrada registrada correctamente a las " +
+                response.data.check_in,
             });
             break;
           case "Salida":
             ElMessage.success({
-              message: "Salida registrada correctamente",
+              message:
+                "Salida registrada correctamente a las " +
+                response.data.check_out,
             });
             break;
         }
       } catch (error) {
         if (error.response) {
-          console.log(error.response)
-          ElMessage.error({
-            message: error.response.data.message,
-          });
+          if (error.response.status == 422) {
+            ElMessage.error({
+              message: "Datos enviados incompletos o incorrectos",
+            });
+            this.cargando = false;
+            return;
+          } else {
+            ElMessage.error({
+              message: error.response.data.message,
+            });
+            this.cargando = false;
+            return;
+          }
         } else {
           ElMessage.error({
             message: "Error al realizar la acción, intente nuevamente",
@@ -94,7 +107,7 @@ export default {
       if (
         datos.action == null ||
         datos.username == null ||
-        datos.pin == null
+        datos.password == null
       ) {
         return false;
       }
