@@ -6,10 +6,12 @@ import store from "./store";
 import ElementPlus from "element-plus";
 import es from "element-plus/es/locale/lang/es";
 
-import "@/assets/index.css"
+import "@/assets/index.css";
 import "@/assets/index.scss";
 
-import 'bootstrap/dist/css/bootstrap.css'
+import Vue3Geolocation from "vue3-geolocation";
+
+import "bootstrap/dist/css/bootstrap.css";
 
 createApp(App)
   .use(store)
@@ -17,4 +19,5 @@ createApp(App)
   .use(ElementPlus, {
     locale: es,
   })
+  .use(Vue3Geolocation)
   .mount("#app");

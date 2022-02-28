@@ -2,7 +2,7 @@
   <div class="_big-container text-center px-4 py-3">
     <div class="_w-50">
       <p class="_bold">Registro de entrada y salida de personal</p>
-      <el-main v-loading="cargando">
+      <el-main v-loading.fullscreen.lock="cargando">
         <el-radio-group v-model="credenciales.action" class="d-block">
           <el-radio label="Entrada" size="large">Entrada</el-radio>
           <el-radio label="Salida" size="large">Salida</el-radio>
@@ -17,7 +17,7 @@
         <el-input
           v-model="credenciales.password"
           class="_w-50 d-block mx-auto my-4"
-          placeholder="Ingrese su pin"
+          placeholder="Ingrese su contraseña"
           size="large"
           clearable
           type="password"
@@ -46,7 +46,11 @@ export default {
         action: null,
         username: null,
         password: null,
-        date: null
+        date: null,
+        coordinates: {
+          lat: null,
+          lng: null,
+        },
       },
     };
   },
@@ -62,20 +66,16 @@ export default {
       }
       try {
         datos.date = new Date();
-        const response = await registrarAccionApi(datos);
+        await registrarAccionApi(datos);
         switch (datos.action) {
           case "Entrada":
             ElMessage.success({
-              message:
-                "Entrada registrada correctamente a las " +
-                response.data.check_in,
+              message: "Entrada registrada correctamente",
             });
             break;
           case "Salida":
             ElMessage.success({
-              message:
-                "Salida registrada correctamente a las " +
-                response.data.check_out,
+              message: "Salida registrada correctamente",
             });
             break;
         }
@@ -107,12 +107,30 @@ export default {
       if (
         datos.action == null ||
         datos.username == null ||
-        datos.password == null
+        datos.password == null ||
+        datos.coordinates.lat == null ||
+        datos.coordinates.lng == null
       ) {
         return false;
       }
       return true;
     },
+  },
+  created() {
+    this.$getLocation({
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0,
+    })
+      .then((coordinates) => {
+        this.credenciales.coordinates.lat = coordinates.lat;
+        this.credenciales.coordinates.lng = coordinates.lng;
+      })
+      .catch(() => {
+        ElMessage.error({
+          message: "Error al obtener las coordenadas",
+        });
+      });
   },
 };
 </script>
