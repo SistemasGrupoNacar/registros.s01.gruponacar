@@ -2,7 +2,7 @@
   <div class="_big-container text-center px-4 py-3">
     <div class="_w-50">
       <p class="_bold">Registro de entrada y salida de personal</p>
-      <div>
+      <el-main v-loading="cargando">
         <el-radio-group v-model="credenciales.action" class="d-block">
           <el-radio label="Entrada" size="large">Entrada</el-radio>
           <el-radio label="Salida" size="large">Salida</el-radio>
@@ -15,9 +15,9 @@
           clearable
         />
         <el-input
-          v-model="credenciales.password"
+          v-model="credenciales.pin"
           class="_w-50 d-block mx-auto my-4"
-          placeholder="Ingrese su contraseña"
+          placeholder="Ingrese su pin"
           size="large"
           clearable
           type="password"
@@ -28,37 +28,41 @@
           v-on:click.prevent="registrarAccion(credenciales)"
           >Registrar acci&oacute;n</el-button
         >
-      </div>
-      {{ accion }}
+      </el-main>
+      {{ credenciales }}
     </div>
   </div>
 </template>
 
 <script>
 import { ElMessage } from "element-plus";
-import { realizarAccionApi } from "@/api/index.js";
+import registrarAccionApi from "@/api/index.js";
 export default {
   name: "HomeView",
   components: {},
   data() {
     return {
+      cargando: false,
       credenciales: {
         action: null,
         username: null,
-        password: null,
+        pin: null,
       },
     };
   },
   methods: {
     async registrarAccion(datos) {
+      this.cargando = true;
       if (!this.verificarDatos(datos)) {
         ElMessage.error({
           message: "Debe ingresar todos los datos",
         });
+        this.cargando = false;
         return;
       }
       try {
-        await realizarAccionApi(datos);
+      
+        await registrarAccionApi(datos);
         switch (datos.action) {
           case "Entrada":
             ElMessage.success({
@@ -73,6 +77,7 @@ export default {
         }
       } catch (error) {
         if (error.response) {
+          console.log(error.response)
           ElMessage.error({
             message: error.response.data.message,
           });
@@ -82,16 +87,14 @@ export default {
           });
         }
       }
-      ElMessage.warning("Registrando acción...");
+      this.cargando = false;
     },
 
     verificarDatos(datos) {
       if (
         datos.action == null ||
-        datos.action != "Entrada" ||
-        datos.action != "Salida" ||
         datos.username == null ||
-        datos.password == null
+        datos.pin == null
       ) {
         return false;
       }

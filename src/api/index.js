@@ -1,10 +1,10 @@
-const API_URL = process.env.VUE_APP_API_URL;
+import API_URL from "./config";
 import axios from "axios";
 
-const realizarAccionApi = async (datos) => {
+async function realizarAccionApi(datos) {
   return new Promise((resolve, reject) => {
     axios
-      .post(API_URL + "/register-action", datos)
+      .post(API_URL + "/register-actions", datos)
       .then((response) => {
         resolve(response);
       })
@@ -12,8 +12,6 @@ const realizarAccionApi = async (datos) => {
         reject(error);
       });
   });
-};
+}
 
-export default {
-  realizarAccionApi,
-};
+export default realizarAccionApi;
