@@ -64,6 +64,14 @@ export default {
         this.cargando = false;
         return;
       }
+      if (datos.coordinates.lat == null || datos.coordinates.lng == null) {
+        ElMessage.error({
+          message:
+            "No fue posible obtener las coordenadas, revise los permisos",
+        });
+        this.cargando = false;
+        return;
+      }
       try {
         datos.date = new Date();
         await registrarAccionApi(datos);
@@ -107,9 +115,7 @@ export default {
       if (
         datos.action == null ||
         datos.username == null ||
-        datos.password == null ||
-        datos.coordinates.lat == null ||
-        datos.coordinates.lng == null
+        datos.password == null
       ) {
         return false;
       }
