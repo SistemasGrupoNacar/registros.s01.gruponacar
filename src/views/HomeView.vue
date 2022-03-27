@@ -74,7 +74,14 @@ export default {
       }
       try {
         datos.date = new Date();
-        await registrarAccionApi(datos);
+        await registrarAccionApi({
+          action: datos.action,
+          username: datos.username,
+          password: datos.password,
+          date: datos.date,
+          coordinates: datos.coordinates,
+          type: "Empleado"
+        });
         switch (datos.action) {
           case "Entrada":
             ElMessage.success({
