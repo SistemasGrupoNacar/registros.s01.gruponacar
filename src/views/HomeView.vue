@@ -13,6 +13,7 @@
           size="large"
           placeholder="Ingrese su usuario"
           clearable
+          autocomplete="off"
         />
         <el-input
           v-model="credenciales.password"
@@ -80,7 +81,7 @@ export default {
           password: datos.password,
           date: datos.date,
           coordinates: datos.coordinates,
-          type: "Empleado"
+          type: "Empleado",
         });
         switch (datos.action) {
           case "Entrada":
